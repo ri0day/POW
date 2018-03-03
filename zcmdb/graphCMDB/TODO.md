@@ -1,0 +1,4 @@
+- [x] the relations between App and ECS
+- [x] Bug: arangodb not auto remove dangling edges when remove document
+- [x] Bug: sync_account() not update old data 
+- [x] Feature: init script for create database and collections

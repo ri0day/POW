@@ -1,0 +1,25 @@
+filebeat.prospectors:
+- input_type: log
+  paths:
+    - /data1/deploy/eureka-server/log/console.log
+  ignore_older: 2h
+  close_inactive: 10m
+  close_renamed: true
+  clean_removed: true
+  document_type: eureka-server
+  multiline.pattern: '^[[:space:]]+|^Caused by'
+  multiline.negate: false
+  multiline.match: after
+
+- input_type: log
+  paths:
+    - /var/log/secure
+  ignore_older: 2h
+  close_inactive: 10m
+  close_renamed: true
+  document_type: linuxsys
+
+
+name: eureka-s01
+output.logstash:
+  hosts: ["10.117.82.4:5044"]

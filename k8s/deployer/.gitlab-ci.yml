@@ -1,0 +1,20 @@
+image: docker:latest
+
+variables:
+  DOCKER_OPTS: "--insecure-registry 192.168.182.20 --registry-mirror http://6b3b7784.m.daocloud.io"
+  DOCKER_DRIVER: overlay
+  IMAGE_NAME: 192.168.182.20/devops/deployer:v2
+stages:
+    - build
+    - test
+
+source_to_images:
+  stage: build
+  script:
+    - docker  login -u admin -p haha123 192.168.182.20
+    - docker build -t $IMAGE_NAME .
+    - docker  push $IMAGE_NAME
+test_images:
+  stage: test
+  script:
+    - docker run --rm $IMAGE_NAME kubectl version

@@ -1,0 +1,41 @@
+image: docker:latest
+
+cache:
+  key: "$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME"
+
+variables:
+  DOCKER_DRIVER: overlay
+  CONTAINER_IMAGE: "192.168.182.20/devops/$CI_PROJECT_NAME:test"  
+  DEPLOY_IMAGE: "192.168.182.20/devops/deployer:v2"
+  
+
+stages:
+    - build
+    - test
+    - deploy
+
+
+source_to_images:
+  stage: build
+  script:
+    - docker build -t $CONTAINER_IMAGE .
+    - docker login -u admin -p haha123 192.168.182.20
+    - docker push $CONTAINER_IMAGE
+
+unit_test:
+  stage: test
+  script:
+    - docker run --rm $CONTAINER_IMAGE python /usr/src/app/test.py
+
+deploy_to_k8s:
+  stage: deploy
+  script:
+    - echo "ready to rock"
+    - docker login -u admin -p haha123 192.168.182.20
+    - docker run --rm $DEPLOY_IMAGE deploy.sh $CI_PROJECT_NAME $CONTAINER_IMAGE 5000 5
+    - echo "open http://192.168.182.31:$(docker run --rm $DEPLOY_IMAGE kubectl get services/$CI_PROJECT_NAME -o go-template='{{(index .spec.ports 0).nodePort}}')"
+  environment:
+    name: dev
+    url: "http://192.168.182.9:8001/api/v1/namespaces/default/services/$CI_PROJECT_NAME/proxy/"
+  only:
+    - master

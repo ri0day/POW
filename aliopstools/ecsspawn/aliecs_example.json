@@ -1,0 +1,33 @@
+{
+    "001":{
+    "account":"account1_env1",
+    "InstanceType":"ecs.sn1.medium",
+    "SecurityGroupId":"sg-bp1hpu0vd9pka3iof9l3",
+    "ImageId":"m-bp14u2bubk1xrkw6wv13",
+    "RegionId":"cn-hangzhou",
+    "ZoneId":"cn-hangzhou-e",
+    "InstanceName":"xxs4j06-ecs-eureka01",
+    "InstanceChargeType":"PrePaid",
+    "Period":1,
+    "AutoRenew":"True",
+    "AutoRenewPeriod":1,
+    "Tag.1.Key":"AppName",
+    "Tag.1.Value":" xxs4j06-eureka01"
+    },
+    "002":{
+    "account":"account2_env2",
+    "InstanceType":"ecs.sn1.medium",
+    "SecurityGroupId":"sg-xxxx",
+    "ImageId":"m-xxxxx",
+    "RegionId":"cn-hangzhou",
+    "ZoneId":"cn-hangzhou-e",
+    "InstanceName":"xxsz-web",
+    "InstanceChargeType":"PrePaid",
+    "Period":1,
+    "AutoRenew":"True",
+    "AutoRenewPeriod":1,
+    "Tag.1.Key":"AppName",
+    "Tag.1.Value":" xxs4j06-web"
+    }
+
+}
