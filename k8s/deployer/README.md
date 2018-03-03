@@ -8,7 +8,8 @@
 
 -----
 ##### 示例:
-部署 autoci项目 指定image地址为http://xyz/devops/autoci:v2  对外暴露5000端口 3个副本
+部署 autoci项目 指定image地址为http://xyz/devops/autoci:v2  对外暴露5000端口 3个副本  
+
 example : 
-`docker pull http://xyz/devops/deployer`
-`docker run -rm deployer deploy.sh autoci http://xyz/devops/autoci:v2 5000 3`
+`docker pull http://xyz/devops/deployer`  
+`docker run -rm deployer deploy.sh autoci http://xyz/devops/autoci:v2 5000 3`  
