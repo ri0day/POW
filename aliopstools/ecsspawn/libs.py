@@ -82,15 +82,15 @@ class SpawnEcs(object):
         if instanceid:
             g = SpawnEcs()
             req = g.instance_status(instanceid)
-            response_str = g.send_request(account,req)
-            status = response_str.get('Instances').get('Instance')[0].get('Status')
+            response = g.send_request(account,req)
+            status = response.get('Instances').get('Instance')[0].get('Status')
             while status == 'Pending':
                 print 'instance in pending status ,retry in 2s'
                 sleep(2)
                 return self.bringup_instance(instanceid,account)
         req = g.startup_ecs(instanceid) 
-        response_str = g.send_request(account,req)
-        return response_str
+        response = g.send_request(account,req)
+        return response
 
 def get_content(dst):
     if dst.startswith('http'):

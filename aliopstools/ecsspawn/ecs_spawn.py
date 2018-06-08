@@ -13,12 +13,12 @@ def ecs_gen(filepath):
         account = params.get('account')
         if 'Amount' in params:
             req = q.build_request_run_ecs(params)
-            response_str = q.send_request(account, req)
-            instanceid = response_str.get('InstanceIdSets').get('InstanceIdSet')
+            response = q.send_request(account, req)
+            instanceid = response.get('InstanceIdSets').get('InstanceIdSet')
         else:
             req = q.build_request_create_ecs(params)
-            response_str = q.send_request(account, req)
-            instanceid = response_str.get('InstanceId')
+            response = q.send_request(account, req)
+            instanceid = response.get('InstanceId')
             if instanceid:
                    q.bringup_instance(instanceid,account)
   
