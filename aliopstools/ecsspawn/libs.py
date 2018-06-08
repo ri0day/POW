@@ -3,24 +3,27 @@ import ConfigParser
 import json
 import logging
 import os
+from time import sleep
 
 import requests
 from aliyunsdkcore import client
 from aliyunsdkecs.request.v20140526.CreateInstanceRequest import CreateInstanceRequest
 from aliyunsdkecs.request.v20140526.RunInstancesRequest import RunInstancesRequest
 from aliyunsdkecs.request.v20140526.StartInstanceRequest import StartInstanceRequest
+from aliyunsdkecs.request.v20140526.DescribeInstancesRequest import DescribeInstancesRequest
 
 logging.basicConfig(level=logging.INFO, filename="app.log",
                     format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
                     datefmt='%a, %d %b %Y %H:%M:%S')
 
+config_filename = 'account.ini'
 
 class AliBase(object):
-    def __init__(self):
+    def __init__(self,config=config_filename):
         cfg = ConfigParser.ConfigParser()
         cfg.optionxform = str
         cfg_dir = os.path.dirname(__file__)
-        cfg.read(os.path.join(cfg_dir, 'config.ini'))
+        cfg.read(os.path.join(cfg_dir, config))
         sections = cfg.sections()
         self.accounts = {}
         for section in sections:
@@ -59,6 +62,11 @@ class SpawnEcs(object):
         request.set_InstanceId(instanceid)
         return  request
 
+    def instance_status(self,instanceid):
+        request = DescribeInstancesRequest()
+        request.set_InstanceIds([instanceid])
+        request.set_accept_format('json')
+        return request
 
     def send_request(self, account, request):
         try:
@@ -70,6 +78,19 @@ class SpawnEcs(object):
         except Exception as e:
             logging.info(e)
 
+    def bringup_instance(self,instanceid,account):
+        if instanceid:
+            g = SpawnEcs()
+            req = g.instance_status(instanceid)
+            response_str = g.send_request(account,req)
+            status = response_str.get('Instances').get('Instance')[0].get('Status')
+            while status == 'Pending':
+                print 'instance in pending status ,retry in 2s'
+                sleep(2)
+                return self.bringup_instance(instanceid,account)
+        req = g.startup_ecs(instanceid) 
+        response_str = g.send_request(account,req)
+        return response_str
 
 def get_content(dst):
     if dst.startswith('http'):

@@ -19,14 +19,15 @@ def ecs_gen(filepath):
             req = q.build_request_create_ecs(params)
             response_str = q.send_request(account, req)
             instanceid = response_str.get('InstanceId')
-            r = q.startup_ecs(instanceid)
-            q.send_request(account, r)
-
+            if instanceid:
+                   q.bringup_instance(instanceid,account)
+  
         if instanceid:
             print "Create ECS Server {hostid}  Success Instanceid: {instanceid}".format(hostid=hostid,
                                                                                         instanceid=instanceid)
         else:
             print "Create ECS Server {hostid}  Failed".format(hostid=hostid)
+
 
 
 if __name__ == '__main__':
