@@ -19,7 +19,7 @@ logging.basicConfig(level=logging.INFO, filename="app.log",
 config_filename = 'account.ini'
 
 class AliBase(object):
-    def __init__(self,config=config_filename):
+    def __init__(self,config=config_filename,region=None):
         cfg = ConfigParser.ConfigParser()
         cfg.optionxform = str
         cfg_dir = os.path.dirname(__file__)
@@ -28,14 +28,20 @@ class AliBase(object):
         self.accounts = {}
         for section in sections:
             options = dict(cfg.items(section))
-            self.accounts[section] = client.AcsClient(options.get('ACCESSKEY'), options.get('ACCESS_SECRET'),
-                                                      options.get('REGION'))
+            if not region:
+                self.accounts[section] = client.AcsClient(options.get('ACCESSKEY'), options.get('ACCESS_SECRET'),
+                                                          options.get('REGION'))
+            else:
+                self.accounts[section] = client.AcsClient(options.get('ACCESSKEY'), options.get('ACCESS_SECRET'), region)
 
     def client(self, account):
         return self.accounts.get(account)
 
 
 class SpawnEcs(object):
+    def __init__(self,region):
+        self.region = region
+
     def build_request_run_ecs(self, params):
         request = RunInstancesRequest()
         request.set_accept_format('json')
@@ -70,7 +76,7 @@ class SpawnEcs(object):
 
     def send_request(self, account, request):
         try:
-            ctl = AliBase().client(account)
+            ctl = AliBase(region=self.region).client(account)
             response_str = ctl.do_action(request)
             logging.info(response_str)
             response_detail = json.loads(response_str)
@@ -78,9 +84,9 @@ class SpawnEcs(object):
         except Exception as e:
             logging.info(e)
 
-    def bringup_instance(self,instanceid,account):
+    def bringup_instance(self,instanceid,account,region):
         if instanceid:
-            g = SpawnEcs()
+            g = SpawnEcs(region=region)
             req = g.instance_status(instanceid)
             response = g.send_request(account,req)
             status = response.get('Instances').get('Instance')[0].get('Status')
