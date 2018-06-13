@@ -37,11 +37,16 @@ class AliBase(object):
     def client(self, account):
         return self.accounts.get(account)
 
+    def send_request(self, account, request):
+        try:
+            response_str = self.client.get(account).do_action(request)
+            logging.info(response_str)
+            response_detail = json.loads(response_str)
+            return response_detail
+        except Exception as e:
+            logging.info(e)
 
 class SpawnEcs(object):
-    def __init__(self,region):
-        self.region = region
-
     def build_request_run_ecs(self, params):
         request = RunInstancesRequest()
         request.set_accept_format('json')
@@ -74,29 +79,6 @@ class SpawnEcs(object):
         request.set_accept_format('json')
         return request
 
-    def send_request(self, account, request):
-        try:
-            ctl = AliBase(region=self.region).client(account)
-            response_str = ctl.do_action(request)
-            logging.info(response_str)
-            response_detail = json.loads(response_str)
-            return response_detail
-        except Exception as e:
-            logging.info(e)
-
-    def bringup_instance(self,instanceid,account,region):
-        if instanceid:
-            g = SpawnEcs(region=region)
-            req = g.instance_status(instanceid)
-            response = g.send_request(account,req)
-            status = response.get('Instances').get('Instance')[0].get('Status')
-            while status == 'Pending':
-                print 'instance in pending status ,retry in 2s'
-                sleep(2)
-                return self.bringup_instance(instanceid,account)
-        req = g.startup_ecs(instanceid) 
-        response = g.send_request(account,req)
-        return response
 
 def get_content(dst):
     if dst.startswith('http'):
