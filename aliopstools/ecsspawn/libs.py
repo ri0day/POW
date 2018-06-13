@@ -34,12 +34,12 @@ class AliBase(object):
             else:
                 self.accounts[section] = client.AcsClient(options.get('ACCESSKEY'), options.get('ACCESS_SECRET'), region)
 
-    def client(self, account):
+    def _client(self, account):
         return self.accounts.get(account)
 
     def send_request(self, account, request):
         try:
-            response_str = self.client.get(account).do_action(request)
+            response_str = self._client(account).do_action(request)
             logging.info(response_str)
             response_detail = json.loads(response_str)
             return response_detail
