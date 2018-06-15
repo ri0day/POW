@@ -39,6 +39,7 @@ class AliBase(object):
 
     def send_request(self, account, request):
         try:
+            request.set_accept_format('json')
             response_str = self._client(account).do_action(request)
             logging.info(response_str)
             response_detail = json.loads(response_str)
@@ -49,7 +50,6 @@ class AliBase(object):
 class SpawnEcs(object):
     def build_request_run_ecs(self, params):
         request = RunInstancesRequest()
-        request.set_accept_format('json')
         for k in params:
             if k == 'account':
                 pass
@@ -59,7 +59,6 @@ class SpawnEcs(object):
 
     def build_request_create_ecs(self, params):
         request = CreateInstanceRequest()
-        request.set_accept_format('json')
         for k in params:
             if k == 'account':
                 pass
@@ -69,14 +68,12 @@ class SpawnEcs(object):
 
     def startup_ecs(self,instanceid):
         request = StartInstanceRequest()
-        request.set_accept_format('json')
         request.set_InstanceId(instanceid)
         return  request
 
     def instance_status(self,instanceid):
         request = DescribeInstancesRequest()
         request.set_InstanceIds([instanceid])
-        request.set_accept_format('json')
         return request
 
 
