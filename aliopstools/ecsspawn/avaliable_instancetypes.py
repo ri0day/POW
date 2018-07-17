@@ -25,7 +25,7 @@ def query_instance_type():
         SupportedResource = AvailableResource.get('SupportedResources').get('SupportedResource')
         return [d['Value'] for d in SupportedResource]
     else:
-        print "Usage: python instance_type_query.py --zone cn-hangzhou-f --cpus 4 --mem 8"
+        print "Usage: python avaliable_instancetypes.py --zone cn-hangzhou-f --cpus 4 --mem 8"
 
 if __name__ == '__main__':
 
