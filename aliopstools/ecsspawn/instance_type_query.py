@@ -23,8 +23,7 @@ def query_instance_type():
         resp = c.send_request(account,req)
         AvailableResource = resp.get('AvailableZones').get('AvailableZone')[0].get('AvailableResources').get('AvailableResource')[0]
         SupportedResource = AvailableResource.get('SupportedResources').get('SupportedResource')
-        for d in SupportedResource:
-            print d['Value']
+        return [d['Value'] for d in SupportedResource]
     else:
         print "Usage: python instance_type_query.py --zone cn-hangzhou-f --cpus 4 --mem 8"
 
@@ -35,4 +34,5 @@ if __name__ == '__main__':
     parser.add_argument("--cpus", help="number of cores", type=int)
     parser.add_argument("--mem", help="physical memory (g)", type=int)
     args = parser.parse_args()
-    query_instance_type()
+    for r in query_instance_type():
+        print r
