@@ -40,7 +40,7 @@ class AliBase(object):
     def send_request(self, account, request):
         try:
             request.set_accept_format('json')
-            response_str = self._client(account).do_action(request)
+            response_str = self._client(account).do_action_with_exception(request)
             logging.info(response_str)
             response_detail = json.loads(response_str)
             return response_detail

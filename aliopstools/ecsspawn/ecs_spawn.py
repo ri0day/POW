@@ -1,7 +1,7 @@
 # coding: utf-8
 
 from sys import argv
-
+from libs import AliBase
 from libs import SpawnEcs
 from libs import get_content
 
