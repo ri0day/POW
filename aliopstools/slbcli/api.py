@@ -53,7 +53,9 @@ class AliyunSlb(object):
             slb_regionid = obj.get('RegionId').encode('utf-8')
             slb_status = obj.get('LoadBalancerStatus').encode('utf-8')
             slb_ip = obj.get('Address').encode('utf-8')
-            slb_backends = self.list_slb_backends(slb_id)
+            attr_obj = self.get_slb_attrs(slb_id)
+            slb_backends = attr_obj.get('BackendServers').get('BackendServer')
+            slb_listeners =  attrobj.get('ListenerPorts').get('ListenerPort')
             slb_vgroups = self.list_vgroups(slb_id)
             vss = []
             if slb_vgroups:
@@ -64,6 +66,7 @@ class AliyunSlb(object):
                     vss.append(vgsrvinfo)
 
             d[slb_id] = {'name': slb_name,'type': slb_type,'slb_ip': slb_ip,
+                         'listeners':slb_listeners,
                         'slb_status': slb_status, 'slb_regionid': slb_regionid,
                         'backends':slb_backends ,'vgroups':slb_vgroups,'vgroup_servers':vss}
         for k, v in d.items():
@@ -86,7 +89,7 @@ class AliyunSlb(object):
         slb_json = json.loads(slb_r)
         return slb_json.get('BackendServers').get('BackendServer')
 
-    def list_slb_backends(self, slb_id):
+    def get_slb_attrs(self, slb_id):
         slb = DescribeLoadBalancerAttributeRequest.DescribeLoadBalancerAttributeRequest()
         slb.set_LoadBalancerId(slb_id)
         slb.set_accept_format('json')
