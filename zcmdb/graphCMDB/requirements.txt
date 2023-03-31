@@ -1,5 +1,5 @@
 airflow[celery,mysql]==1.8.0
-redis==2.10.5
+redis==4.4.4
 python-arango==3.5.0
 aliyun-python-sdk-core==2.2.1
 aliyun-python-sdk-ecs==3.0.0
